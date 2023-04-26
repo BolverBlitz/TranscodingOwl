@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "minimist": "^1.2.8",
+    "terminal-kit": "^3.0.0"
+  }
+}
