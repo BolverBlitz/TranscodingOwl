@@ -54,10 +54,23 @@ const main = async () => {
         const choosenEncoders_name = choosenEncoders.map((encoder) => encoder[0]);
         const choosenEncoders_config = choosenEncoders.map((encoder) => encoder[1]);
 
+        const setQuality = await terminal.TerminalInput('Set quality (0-51, 0 is lossless, 51 is worst quality): ');
+        const setPresets = await terminal.TerminalInput('Set preset (0: fast, 1: default, 2: slow): ');
+
+        if(setQuality < 0 || setQuality > 51) {
+            terminal.log('red', `Quality must be between 0 and 51`);
+            process.exit(1);
+        }
+
+        if(setPresets < 0 || setPresets > 2) {
+            terminal.log('red', `Preset must be between 0 and 2`);
+            process.exit(1);
+        }
+
         const taskHandler = new TaskHandler(choosenEncoders_name, choosenEncoders_config, terminal.log);
 
-        taskHandler.setQuality(28);
-        taskHandler.setPresets(1);
+        taskHandler.setQuality(setQuality);
+        taskHandler.setPresets(setPresets);
 
         for(let i = 0; i < results.length; i++) {
             taskHandler.addTask(results[i]);
