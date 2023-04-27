@@ -63,6 +63,15 @@ const main = async () => {
             taskHandler.addTask(results[i]);
         }
 
+        taskHandler.on('all_tasks_done', () => {
+            for(let i = 0; i < results.length; i++) {
+                fs.unlinkSync(results[i]);
+                fs.renameSync(`${results[i].split('.')[0]}-encoded.mkv`, `${results[i].split('.')[0]}.mkv`);
+            }
+            terminal.log('green', `All tasks done!`);
+            process.exit(0);
+        });
+
     });
 };
 

@@ -15,7 +15,7 @@ module.exports = {
         "quality_command": "-rc 1",
         "quality_constract": ["-qp"],
         "quality_preset_command": "-preset",
-        "quality_preset_constract": ["fast", "default", "medium"]
+        "quality_preset_constract": ["fast", "medium", "slow"]
     },
     "hevc_amf": {
         "name": "hevc_amf",
