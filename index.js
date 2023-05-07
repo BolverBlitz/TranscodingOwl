@@ -5,13 +5,14 @@ const terminal = require('./lib/terminal');
 
 const args = require('minimist')(process.argv.slice(2));
 
-const { folderPaths, executeCommand, getFileExtension } = require('./lib/misc');
+const { folderPaths, getFileExtension, getTotalSize, humanFileSize } = require('./lib/misc');
 const { test_encoder, check_ffmpeg } = require('./lib/encoder_detect');
 
 
 const { TaskHandler } = require('./lib/taskhandler');
 
 const videoextentions = require('./config/videoextentions');
+const { get } = require('http');
 
 let encoderfolder;
 
@@ -41,6 +42,7 @@ const main = async () => {
 
         // Filter only allowed video file extentions
         results = results.filter((file, index) => videoextentions.avaible.includes(getFileExtension(file)));
+        const toatlStartSice = await getTotalSize(results);
 
         //console.log(results)
 
@@ -78,12 +80,12 @@ const main = async () => {
             taskHandler.addTask(results[i]);
         }
 
-        taskHandler.on('all_tasks_done', () => {
-            for(let i = 0; i < results.length; i++) {
-                fs.unlinkSync(results[i]);
-                fs.renameSync(`${results[i].split('.')[0]}-encoded.mkv`, `${results[i].split('.')[0]}.mkv`);
-            }
+        taskHandler.on('all_tasks_done', async () => {    
             terminal.log('green', `All tasks done!`);
+            const toatlEndSice = await getTotalSize(results);
+            terminal.log('green', `Total size before: ${humanFileSize(toatlStartSice)}`);
+            terminal.log('green', `Total size after: ${humanFileSize(toatlEndSice)}`);
+            terminal.log('green', `Saved: ${humanFileSize(toatlStartSice - toatlEndSice)}`);
             process.exit(0);
         });
 
