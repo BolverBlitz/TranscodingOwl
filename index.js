@@ -1,11 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
+const terminal = require('./lib/terminal');
+
 const args = require('minimist')(process.argv.slice(2));
 
 const { folderPaths, executeCommand, getFileExtension } = require('./lib/misc');
 const { test_encoder, check_ffmpeg } = require('./lib/encoder_detect');
-const terminal = require('./lib/terminal');
+
 
 const { TaskHandler } = require('./lib/taskhandler');
 
