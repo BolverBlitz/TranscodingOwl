@@ -81,7 +81,7 @@ const main = async () => {
         }
 
         taskHandler.on('all_tasks_done', async () => {    
-            terminal.log('green', `All tasks done!`);
+            terminal.log('green', `\nAll tasks done!`);
             const toatlEndSice = await getTotalSize(results);
             terminal.log('green', `Total size before: ${humanFileSize(toatlStartSice)}`);
             terminal.log('green', `Total size after: ${humanFileSize(toatlEndSice)}`);
