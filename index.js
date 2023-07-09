@@ -96,7 +96,7 @@ const main = async () => {
             await delay(15*1000, `Waiting for pending file IO...`); // Await pending file IO
             const toatlEndSice = await getTotalSize(results);
             terminal.log('green', `Total size before: ${humanFileSize(toatlStartSice)}`);
-            terminal.log('green', `Total size after: ${humanFileSize(toatlEndSice)}`);
+            terminal.log('green', `Total size after: ${humanFileSize(toatlEndSice)} (${Math.round((toatlEndSice / toatlStartSice) * 100)}%)`);
             terminal.log('green', `Saved: ${humanFileSize(toatlStartSice - toatlEndSice)}`);
             process.exit(0);
         });
