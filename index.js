@@ -12,7 +12,15 @@ const { test_encoder, check_ffmpeg } = require('./lib/encoder_detect');
 const { TaskHandler } = require('./lib/taskhandler');
 
 const videoextentions = require('./config/videoextentions');
-const { get } = require('http');
+
+const delay = async (ms, message) => {
+    return new Promise((resolve, reject) => {
+        if (message) terminal.log('cyan', message);
+        setTimeout(() => {
+            resolve();
+        }, ms);
+    });
+}
 
 let encoderfolder;
 
@@ -82,6 +90,7 @@ const main = async () => {
 
         taskHandler.on('all_tasks_done', async () => {
             terminal.log('green', `\nAll tasks done!`);
+            await delay(15*1000, `Waiting for pending file IO...`); // Await pending file IO
             const toatlEndSice = await getTotalSize(results);
             terminal.log('green', `Total size before: ${humanFileSize(toatlStartSice)}`);
             terminal.log('green', `Total size after: ${humanFileSize(toatlEndSice)}`);
