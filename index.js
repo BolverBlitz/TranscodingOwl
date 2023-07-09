@@ -32,6 +32,9 @@ if ('i' in args || 'input' in args) {
 }
 
 const main = async () => {
+
+    terminal.log('brightRed', `This application is written in a very async way.\nThis means, if you manualy stop it, it will brick some part of your media library.\n\nYou can look at log.txt and console to work out what broke and fix it before running it again!\n`)
+
     check_ffmpeg();
     folderPaths(encoderfolder, async (err, results) => {
         if (err) {
