@@ -5,7 +5,7 @@ const terminal = require('./lib/terminal');
 
 const args = require('minimist')(process.argv.slice(2));
 
-const { folderPaths, getFileExtension, getTotalSize, humanFileSize } = require('./lib/misc');
+const { folderPaths, getFileExtension, getTotalSize, humanFileSize, setTerminalTitle } = require('./lib/misc');
 const { test_encoder, check_ffmpeg } = require('./lib/encoder_detect');
 
 
@@ -35,7 +35,10 @@ const main = async () => {
 
     terminal.log('brightRed', `This application is written in a very async way.\nThis means, if you manualy stop it, it will brick some part of your media library.\n\nYou can look at log.txt and console to work out what broke and fix it before running it again!\n`)
 
+    setTerminalTitle('Checking ffmpeg...');
     check_ffmpeg();
+
+    setTerminalTitle('Scanning folder(s)...');
     folderPaths(encoderfolder, async (err, results) => {
         if (err) {
             console.log(err);
@@ -69,6 +72,7 @@ const main = async () => {
         const choosenEncoders_name = choosenEncoders.map((encoder) => encoder[0]);
         const choosenEncoders_config = choosenEncoders.map((encoder) => encoder[1]);
 
+        setTerminalTitle('Asking for settings...');
         const setQuality = await terminal.TerminalInput('Set quality (0-51, 0 is lossless, 51 is worst quality): ');
         const setPresets = await terminal.TerminalInput('Set preset (0: fast, 1: default, 2: slow): ');
 
@@ -82,6 +86,7 @@ const main = async () => {
             process.exit(1);
         }
 
+        setTerminalTitle('Preparing tasks...')
         const taskHandler = new TaskHandler(choosenEncoders_name, choosenEncoders_config, terminal.log);
 
         taskHandler.setQuality(setQuality);
@@ -92,8 +97,9 @@ const main = async () => {
         }
 
         taskHandler.on('all_tasks_done', async () => {
+            setTerminalTitle('Waiting for pending file IO...');
             terminal.log('green', `\nAll tasks done!`);
-            await delay(15*1000, `Waiting for pending file IO...`); // Await pending file IO
+            await delay(15 * 1000, `Waiting for pending file IO...`); // Await pending file IO
             const toatlEndSice = await getTotalSize(results);
             terminal.log('green', `Total size before: ${humanFileSize(toatlStartSice)}`);
             terminal.log('green', `Total size after: ${humanFileSize(toatlEndSice)} (${Math.round((toatlEndSice / toatlStartSice) * 100)}%)`);
@@ -102,6 +108,8 @@ const main = async () => {
         });
 
     });
+
+    terminal.log('red', `No files found!`);
 };
 
 main();
