@@ -53,9 +53,14 @@ const main = async () => {
             allFileExtentions.push(getFileExtension(results[i]));
             //console.log(results[i].split('\\').pop().split('/').pop())
         };
-
+        
         // Filter only allowed video file extentions
         results = results.filter((file, index) => videoextentions.avaible.includes(getFileExtension(file)));
+        if(results.length === 0) {
+            terminal.log('red', `No files found!`);
+            process.exit(1);
+        }
+        
         const toatlStartSice = await getTotalSize(results);
 
         //console.log(results)
@@ -108,8 +113,6 @@ const main = async () => {
         });
 
     });
-
-    terminal.log('red', `No files found!`);
 };
 
 main();
