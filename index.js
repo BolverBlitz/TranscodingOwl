@@ -60,12 +60,12 @@ const main = async () => {
             terminal.log('red', `No files found!`);
             process.exit(1);
         }
-        
+
         const toatlStartSice = await getTotalSize(results);
 
         //console.log(results)
 
-        const correctFiles = await terminal.QuestionfileConfirm(results.length, [...new Set(allFileExtentions)]);
+        const correctFiles = await terminal.QuestionfileConfirm(results.length, humanFileSize(toatlStartSice), [...new Set(allFileExtentions)]);
         if (!correctFiles) process.exit(1);
 
         terminal.log('cyan', `Testing encoders. This might take some time...`);
