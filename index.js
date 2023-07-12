@@ -70,6 +70,7 @@ const main = async () => {
 
         terminal.log('cyan', `Testing encoders. This might take some time...`);
 
+        setTerminalTitle('Testing encoder(s)...');
         const encoders = await test_encoder();
 
         const choosenEncoders = await terminal.EncoderSelect(encoders);
@@ -105,7 +106,12 @@ const main = async () => {
             setTerminalTitle('Waiting for pending file IO...');
             terminal.log('green', `\nAll tasks done!`);
             await delay(15 * 1000, `Waiting for pending file IO...`); // Await pending file IO
-            const toatlEndSice = await getTotalSize(results);
+            /*
+                A quick side note about a very unlikely senario:
+                In case there is test.mp4 and test.mkv (The test.mkv was already encoded) in the same folder, the script will count this file twice.
+                This can be fixed by checking witch files where envced already, but i don´t see this as a problem as of now.
+            */
+            const toatlEndSice = taskHandler.getNewSize();
             terminal.log('green', `Total size before: ${humanFileSize(toatlStartSice)}`);
             terminal.log('green', `Total size after: ${humanFileSize(toatlEndSice)} (${Math.round((toatlEndSice / toatlStartSice) * 100)}%)`);
             terminal.log('green', `Saved: ${humanFileSize(toatlStartSice - toatlEndSice)}`);
