@@ -5,6 +5,8 @@ const terminal = require('./lib/terminal');
 
 const args = require('minimist')(process.argv.slice(2));
 
+let reEncode = false; // Re-encode files that are already encoded
+
 const { folderPaths, getFileExtension, getTotalSize, humanFileSize, setTerminalTitle } = require('./lib/misc');
 const { test_encoder, check_ffmpeg } = require('./lib/encoder_detect');
 
@@ -24,11 +26,25 @@ const delay = async (ms, message) => {
 
 let encoderfolder;
 
+if('h' in args || 'help' in args) {
+    console.log(`
+    Usage: node index.js -i <input folder> [-r]
+    -i, --input     Input folder
+    -r, --recode    Re-encode files that are already encoded, only if the target quality is less than the current quality
+    -h, --help      Show this help
+    `);
+    process.exit(0);
+}
+
 if ('i' in args || 'input' in args) {
     encoderfolder = args.i || args.input;
 } else {
     console.log("No input folder provided");
     process.exit(3);
+}
+
+if('r' in args || 'recode' in args) {
+    reEncode = true;
 }
 
 const main = async () => {
@@ -93,7 +109,7 @@ const main = async () => {
         }
 
         setTerminalTitle('Preparing tasks...')
-        const taskHandler = new TaskHandler(choosenEncoders_name, choosenEncoders_config, terminal.log);
+        const taskHandler = new TaskHandler(choosenEncoders_name, choosenEncoders_config, terminal.log, reEncode);
 
         taskHandler.setQuality(setQuality);
         taskHandler.setPresets(setPresets);
