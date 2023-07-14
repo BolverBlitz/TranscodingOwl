@@ -39,7 +39,7 @@ if('h' in args || 'help' in args) {
 if ('i' in args || 'input' in args) {
     encoderfolder = args.i || args.input;
 } else {
-    console.log("No input folder provided");
+    console.log("No input folder provided. Use -h or --help for help.");
     process.exit(3);
 }
 
