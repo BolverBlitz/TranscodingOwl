@@ -3,5 +3,33 @@
     "cli-progress": "^3.12.0",
     "minimist": "^1.2.8",
     "terminal-kit": "^3.0.0"
-  }
+  },
+  "name": "transcodingowl",
+  "description": "Autotranscoder for TV Shows using FFMPEG with HW-Accel\r All encoders use constant quality. Supported are nvidia, amd and cpu. It will only show you avaible hardware!",
+  "version": "0.0.1",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BolverBlitz/TranscodingOwl.git"
+  },
+  "keywords": [
+    "FFMPEG",
+    "transcoding",
+    "media",
+    "cpu",
+    "hwaccel"
+  ],
+  "author": "BolverBlitz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BolverBlitz/TranscodingOwl/issues"
+  },
+  "homepage": "https://github.com/BolverBlitz/TranscodingOwl#readme"
 }
