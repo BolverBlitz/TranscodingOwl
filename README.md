@@ -1,9 +1,18 @@
 # TranscodingOwl
 
-Autotranscoder for TV Shows using FFMPEG with HW-Accel
-All encoders use constant quality. Supported are nvidia, amd and cpu. It will only show you avaible hardware!
+Autotranscoder for TV Shows using FFMPEG with HW-Accel.  
+All encoders use constant quality. Supported are nvidia, amd and cpu. It will only show you avaible hardware!  
 
 You´ll need to place ffmpeg binary into ./bin/ffmpeg
+
+## Features
+- Recursive scanning of your media library
+- Simple CLI based user interface
+- Tracks already encoded files, so you don´t have to
+- Parallel file processing (One per encoder found)
+- Shows progress for each file in seconds
+- Logs all actions
+- Shows starting and final size at the end
 
 ## Use multiple GPUs
 
