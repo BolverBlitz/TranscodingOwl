@@ -14,6 +14,13 @@ You´ll need to place ffmpeg binary into ./bin/ffmpeg
 - Logs all actions
 - Shows starting and final size at the end
 
+## Configuration
+The config file can be found in ./config/encoders.js.  
+The software will check if the encoder is avaible, if you got multiple encoders of the same type look at `Use multiple GPUs`.  
+
+## Known issues
+If the application crashes or is forced to exit, please make sure no ffmpeg process is alive before you restart it.
+
 ## Use multiple GPUs
 
 It can´t dedect multiple GPUs, so you´ll need to set it manually in the config.json  
