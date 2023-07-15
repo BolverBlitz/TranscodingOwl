@@ -6,7 +6,7 @@ All encoders use constant quality. Supported are nvidia, amd and cpu. It will on
 You´ll need to place ffmpeg binary into ./bin/ffmpeg
 
 ## Features
-- Recursive scanning of your media library
+- Recursive scanning of your media library (Around 8000 Files per second on my HDD array)
 - Simple CLI based user interface
 - Tracks already encoded files, so you don´t have to
 - Parallel file processing (One per encoder found)
