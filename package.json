@@ -6,7 +6,7 @@
   },
   "name": "transcodingowl",
   "description": "Autotranscoder for TV Shows using FFMPEG with HW-Accel\r All encoders use constant quality. Supported are nvidia, amd and cpu. It will only show you avaible hardware!",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "index.js",
   "directories": {
     "lib": "lib"
