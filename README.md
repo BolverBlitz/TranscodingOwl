@@ -34,7 +34,7 @@ This string supports placeholders:
 - `{{hostname}}` - Hostname of the machine
 - `{{path}}` - Path to the media folder
 
-You can also use the `-t` or `--tasknotify` flag to provide a webhook url thats called when a task is finished.
+You can also use the `-t` or `--tasknotify` flag to provide a webhook url thats called when a task is finished.   
 This string supports placeholders:
 - `{{task}}` - Name of the task
 - `{{hostname}}` - Hostname of the machine
