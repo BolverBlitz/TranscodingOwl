@@ -47,6 +47,11 @@ This string supports placeholders:
 - `{{encoder_quality}}` - Quality of the encoder used
 - `{{encoder_preset}}` - Preset of the encoder used
 
+Example:
+```sh
+node .\index.js -i "<<Path to mediafiles>>" -r -n "https://api.telegram.org/botxxxxxxx:xxxxxxxxx/sendMessage?chat_id=-xxxxxxx&text=Transcoding of '{{path}}' finished on {{hostname}} saved {{saved}}" -t "https://api.telegram.org/botxxxxxxx:xxxxxxxxx/sendMessage?chat_id=-xxxxxxx&text=Finished {{task}} on {{hostname}} {{original_size}} -> {{new_size}} ({{saved}})"
+```
+
 ## Use multiple GPUs or use the ability to do multiple streams at once
 
 It can´t dedect multiple GPUs, so you´ll need to set it manually in the config.json  
