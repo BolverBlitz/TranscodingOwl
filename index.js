@@ -1,13 +1,13 @@
-const fs = require('fs');
-const path = require('path');
+const os = require('os');
 
 const terminal = require('./lib/terminal');
 
 const args = require('minimist')(process.argv.slice(2));
+process.minimist = args;
 
 let reEncode = false; // Re-encode files that are already encoded
 
-const { folderPaths, getFileExtension, getTotalSize, humanFileSize, setTerminalTitle } = require('./lib/misc');
+const { folderPaths, getFileExtension, getTotalSize, humanFileSize, setTerminalTitle, template } = require('./lib/misc');
 const { test_encoder, check_ffmpeg } = require('./lib/encoder_detect');
 
 
@@ -26,24 +26,46 @@ const delay = async (ms, message) => {
 
 let encoderfolder;
 
-if('h' in args || 'help' in args) {
+if ('h' in args || 'help' in args) {
     console.log(`
     Usage: node index.js -i <input folder> [-r]
     -i, --input     Input folder
     -r, --recode    Re-encode files that are already encoded, only if the target quality is less than the current quality
+    -n, --notify Call this http(s) url when done, supports template variables (see readme)
+    -t, --tasknotify Call this http(s) url when a task is done, supports template variables (see readme)
+    -v, --version   Show version
     -h, --help      Show this help
     `);
     process.exit(0);
 }
 
+if ('v' in args || 'version' in args) {
+    console.log(`v${require('./package.json').version}`);
+    process.exit(0);
+}
+
+if('n' in args || 'notify' in args) {
+    if(typeof args.n !== 'string' && !args.notify) {
+        console.log("No notify url provided.\n\nUse -h or --help for help and check the readme.");
+        process.exit(3);
+    }
+}
+
+if('t' in args || 'tasknotify' in args) {
+    if(typeof args.t !== 'string' && !args.tasknotify) {
+        console.log("No tasknotify url provided.\n\nUse -h or --help for help and check the readme.");
+        process.exit(3);
+    }
+}
+
 if ('i' in args || 'input' in args) {
     encoderfolder = args.i || args.input;
 } else {
-    console.log("No input folder provided. Use -h or --help for help.");
+    console.log("No input folder provided.\n\nUse -h or --help for help.");
     process.exit(3);
 }
 
-if('r' in args || 'recode' in args) {
+if ('r' in args || 'recode' in args) {
     reEncode = true;
 }
 
@@ -69,19 +91,19 @@ const main = async () => {
             allFileExtentions.push(getFileExtension(results[i]));
             //console.log(results[i].split('\\').pop().split('/').pop())
         };
-        
+
         // Filter only allowed video file extentions
         results = results.filter((file, index) => videoextentions.avaible.includes(getFileExtension(file)));
-        if(results.length === 0) {
+        if (results.length === 0) {
             terminal.log('red', `No files found!`);
             process.exit(1);
         }
 
-        const toatlStartSice = await getTotalSize(results);
+        const totalStartSize = await getTotalSize(results);
 
         //console.log(results)
 
-        const correctFiles = await terminal.QuestionfileConfirm(results.length, humanFileSize(toatlStartSice), [...new Set(allFileExtentions)]);
+        const correctFiles = await terminal.QuestionfileConfirm(results.length, humanFileSize(totalStartSize), [...new Set(allFileExtentions)]);
         if (!correctFiles) process.exit(1);
 
         terminal.log('cyan', `Testing encoders. This might take some time...`);
@@ -127,11 +149,31 @@ const main = async () => {
                 In case there is test.mp4 and test.mkv (The test.mkv was already encoded) in the same folder, the script will count this file twice.
                 This can be fixed by checking witch files where envced already, but i don´t see this as a problem as of now.
             */
-            const toatlEndSice = taskHandler.getNewSize();
-            terminal.log('green', `Total size before: ${humanFileSize(toatlStartSice)}`);
-            terminal.log('green', `Total size after: ${humanFileSize(toatlEndSice)} (${Math.round((toatlEndSice / toatlStartSice) * 100)}%)`);
-            terminal.log('green', `Saved: ${humanFileSize(toatlStartSice - toatlEndSice)}`);
-            process.exit(0);
+            const totalEndSize = taskHandler.getNewSize();
+            terminal.log('green', `Total size before: ${humanFileSize(totalStartSize)}`);
+            terminal.log('green', `Total size after: ${humanFileSize(totalEndSize)} (${Math.round((totalEndSize / totalStartSize) * 100)}%)`);
+            terminal.log('green', `Saved: ${humanFileSize(totalStartSize - totalEndSize)}`);
+
+            if ('n' in args || 'notify' in args) {
+                const variables = {
+                    totalSizeBefore: humanFileSize(totalStartSize),
+                    totalSizeAfter: humanFileSize(totalEndSize),
+                    saved: humanFileSize(totalStartSize - totalEndSize),
+                    saved_percent: Math.round((totalEndSize / totalStartSize) * 100),
+                    hostname: os.hostname(),
+                    path: encoderfolder
+                }
+                fetch(template(args.n || args.notification, variables)).then(() => {
+                    terminal.log('green', `Notification sent!`);
+                    process.exit(0);
+                }).catch((err) => {
+                    terminal.log('red', `Error sending notification!`);
+                    console.log(err);
+                    process.exit(0);
+                });
+            } else {
+                process.exit(0);
+            }
         });
 
     });

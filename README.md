@@ -24,6 +24,29 @@ The software will check if the encoder is avaible, if you got multiple encoders 
 ## Known issues
 If the application crashes or is forced to exit, please make sure no ffmpeg process is alive before you restart it.
 
+## Notifications
+You can use the `-n` or `--notify` flag to provide a webhook url thats called when the encoding is finished.  
+This string supports placeholders:
+- `{{totalSizeBefore}}` - Total size of all files before encoding
+- `{{totalSizeAfter}}` - Total size of all files after encoding
+- `{{saved}}` - Saved space in human readable format
+- `{{saved_percent}}` - Saved space in percent
+- `{{hostname}}` - Hostname of the machine
+- `{{path}}` - Path to the media folder
+
+You can also use the `-t` or `--tasknotify` flag to provide a webhook url thats called when a task is finished.
+This string supports placeholders:
+- `{{task}}` - Name of the task
+- `{{hostname}}` - Hostname of the machine
+- `{{original_size}}` - Original size of the file
+- `{{new_size}}` - New size of the file
+- `{{saved}}` - Saved space in human readable format
+- `{{saved_percent}}` - Saved space in percent
+- `{{encoder}}` - Encoder used
+- `{{encoder_name}}` - Name of the encoder used
+- `{{encoder_quality}}` - Quality of the encoder used
+- `{{encoder_preset}}` - Preset of the encoder used
+
 ## Use multiple GPUs or use the ability to do multiple streams at once
 
 It can´t dedect multiple GPUs, so you´ll need to set it manually in the config.json  
