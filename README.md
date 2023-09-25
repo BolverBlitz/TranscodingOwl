@@ -69,7 +69,7 @@ Just add the GPUs you want to use to the array.
         "quality_preset_command": "-preset",
         "quality_preset_constract": ["fast", "medium", "slow"]
     },
-"hevc_nvenc": {
+    "hevc_nvenc_2": {
         "cname": "hevc_nvenc_2",
         "name": "hevc_nvenc",
         "type": "GPU",

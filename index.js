@@ -44,15 +44,15 @@ if ('v' in args || 'version' in args) {
     process.exit(0);
 }
 
-if('n' in args || 'notify' in args) {
-    if(typeof args.n !== 'string' && !args.notify) {
+if ('n' in args || 'notify' in args) {
+    if (typeof args.n !== 'string' && !args.notify) {
         console.log("No notify url provided.\n\nUse -h or --help for help and check the readme.");
         process.exit(3);
     }
 }
 
-if('t' in args || 'tasknotify' in args) {
-    if(typeof args.t !== 'string' && !args.tasknotify) {
+if ('t' in args || 'tasknotify' in args) {
+    if (typeof args.t !== 'string' && !args.tasknotify) {
         console.log("No tasknotify url provided.\n\nUse -h or --help for help and check the readme.");
         process.exit(3);
     }
@@ -86,6 +86,7 @@ const main = async () => {
         // Subscrect paths from results
         let allFileExtentions = [];
         for (let i = 0; i < results.length; i++) {
+            if (results === undefined) continue;
             if (!results[i]) continue;
             if (!videoextentions.avaible.includes(getFileExtension(results[i]))) continue;
             allFileExtentions.push(getFileExtension(results[i]));
