@@ -7,6 +7,11 @@ process.minimist = args;
 
 let reEncode = false; // Re-encode files that are already encoded
 
+let confirm_files = false; // Confirm files found because of CLI usage
+let cli_presets = -1; // Preset to use when using CLI
+let cli_quality = -1; // Quality to use when using CLI
+let cli_encoders = "MISSING"; // Encoders to use when using CLI
+
 const { folderPaths, getFileExtension, getTotalSize, humanFileSize, setTerminalTitle, template } = require('./lib/misc');
 const { test_encoder, check_ffmpeg } = require('./lib/encoder_detect');
 
@@ -33,6 +38,9 @@ if ('h' in args || 'help' in args) {
     -r, --recode    Re-encode files that are already encoded, only if the target quality is less than the current quality
     -n, --notify Call this http(s) url when done, supports template variables (see readme)
     -t, --tasknotify Call this http(s) url when a task is done, supports template variables (see readme)
+    -q, --quality   Set quality (0-51, 0 is lossless, 51 is worst quality)
+    -p, --preset    Set preset (0: fast, 1: default, 2: slow)
+    -e, --encoders  Set encoders (ONLY ALL or CPU or GPU)
     -v, --version   Show version
     -h, --help      Show this help
     `);
@@ -67,6 +75,21 @@ if ('i' in args || 'input' in args) {
 
 if ('r' in args || 'recode' in args) {
     reEncode = true;
+}
+
+if ('q' in args || 'quality' in args) {
+    confirm_files = true;
+    cli_quality = args.q || args.quality;
+}
+
+if ('p' in args || 'preset' in args) {
+    confirm_files = true;
+    cli_presets = args.p || args.preset;
+}
+
+if('e' in args || 'encoders' in args) {
+    confirm_files = true;
+    cli_encoders = args.e || args.encoders;
 }
 
 const main = async () => {
@@ -104,22 +127,39 @@ const main = async () => {
 
         //console.log(results)
 
-        const correctFiles = await terminal.QuestionfileConfirm(results.length, humanFileSize(totalStartSize), [...new Set(allFileExtentions)]);
-        if (!correctFiles) process.exit(1);
+        let choosenEncoders; // Store choosen encoders
 
-        terminal.log('cyan', `Testing encoders. This might take some time...`);
+        if (!confirm_files) {
+            const correctFiles = await terminal.QuestionfileConfirm(results.length, humanFileSize(totalStartSize), [...new Set(allFileExtentions)]);
+            if (!correctFiles) process.exit(1);
 
-        setTerminalTitle('Testing encoder(s)...');
-        const encoders = await test_encoder();
+            terminal.log('cyan', `Testing encoders. This might take some time...`);
 
-        const choosenEncoders = await terminal.EncoderSelect(encoders);
+            setTerminalTitle('Testing encoder(s)...');
+            const encoders = await test_encoder();
+
+            choosenEncoders = await terminal.EncoderSelect(encoders);
+        } else {
+            const encoders = await test_encoder();
+            choosenEncoders = await terminal.EncoderSelect_param(encoders, cli_encoders)
+        }
 
         const choosenEncoders_name = choosenEncoders.map((encoder) => encoder[0]);
         const choosenEncoders_config = choosenEncoders.map((encoder) => encoder[1]);
 
-        setTerminalTitle('Asking for settings...');
-        const setQuality = await terminal.TerminalInput('Set quality (0-51, 0 is lossless, 51 is worst quality): ');
-        const setPresets = await terminal.TerminalInput('Set preset (0: fast, 1: default, 2: slow): ');
+        // Store choosen encoders
+        let setQuality;
+        let setPresets;
+
+        // If CLI is used, skip asking for settings
+        if (!confirm_files) {
+            setTerminalTitle('Asking for settings...');
+            setQuality = await terminal.TerminalInput('Set quality (0-51, 0 is lossless, 51 is worst quality): ');
+            setPresets = await terminal.TerminalInput('Set preset (0: fast, 1: default, 2: slow): ');
+        } else {
+            setQuality = cli_quality;
+            setPresets = cli_presets;
+        }
 
         if (setQuality < 0 || setQuality > 51) {
             terminal.log('red', `Quality must be between 0 and 51`);
