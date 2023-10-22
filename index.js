@@ -87,7 +87,7 @@ if ('p' in args || 'preset' in args) {
     cli_presets = args.p || args.preset;
 }
 
-if('e' in args || 'encoders' in args) {
+if ('e' in args || 'encoders' in args) {
     confirm_files = true;
     cli_encoders = args.e || args.encoders;
 }
@@ -195,24 +195,29 @@ const main = async () => {
             terminal.log('green', `Total size after: ${humanFileSize(totalEndSize)} (${Math.round((totalEndSize / totalStartSize) * 100)}%)`);
             terminal.log('green', `Saved: ${humanFileSize(totalStartSize - totalEndSize)}`);
 
-            if ('n' in args || 'notify' in args) {
-                const variables = {
-                    totalSizeBefore: humanFileSize(totalStartSize),
-                    totalSizeAfter: humanFileSize(totalEndSize),
-                    saved: humanFileSize(totalStartSize - totalEndSize),
-                    saved_percent: Math.round((totalEndSize / totalStartSize) * 100),
-                    hostname: os.hostname(),
-                    path: encoderfolder
+            if (taskHandler.getFailedTasks().length > 0) {
+                if ('n' in args || 'notify' in args) {
+                    const variables = {
+                        totalSizeBefore: humanFileSize(totalStartSize),
+                        totalSizeAfter: humanFileSize(totalEndSize),
+                        saved: humanFileSize(totalStartSize - totalEndSize),
+                        saved_percent: Math.round((totalEndSize / totalStartSize) * 100),
+                        hostname: os.hostname(),
+                        path: encoderfolder
+                    }
+                    fetch(template(args.n || args.notification, variables)).then(() => {
+                        terminal.log('green', `Notification sent!`);
+                        process.exit(0);
+                    }).catch((err) => {
+                        terminal.log('red', `Error sending notification!`);
+                        console.log(err);
+                        process.exit(0);
+                    });
+                } else {
+                    process.exit(0);
                 }
-                fetch(template(args.n || args.notification, variables)).then(() => {
-                    terminal.log('green', `Notification sent!`);
-                    process.exit(0);
-                }).catch((err) => {
-                    terminal.log('red', `Error sending notification!`);
-                    console.log(err);
-                    process.exit(0);
-                });
             } else {
+                terminal.log('red', `No files (re)encoded! - All files are already encoded with a lower quality!`);
                 process.exit(0);
             }
         });
