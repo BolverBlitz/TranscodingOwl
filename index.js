@@ -54,14 +54,14 @@ if ('v' in args || 'version' in args) {
 
 if ('n' in args || 'notify' in args) {
     if (typeof args.n !== 'string' && !args.notify) {
-        console.log("No notify url provided.\n\nUse -h or --help for help and check the readme.");
+        console.error("No notify url provided.\n\nUse -h or --help for help and check the readme.");
         process.exit(3);
     }
 }
 
 if ('t' in args || 'tasknotify' in args) {
     if (typeof args.t !== 'string' && !args.tasknotify) {
-        console.log("No tasknotify url provided.\n\nUse -h or --help for help and check the readme.");
+        console.error("No tasknotify url provided.\n\nUse -h or --help for help and check the readme.");
         process.exit(3);
     }
 }
@@ -69,7 +69,7 @@ if ('t' in args || 'tasknotify' in args) {
 if ('i' in args || 'input' in args) {
     encoderfolder = args.i || args.input;
 } else {
-    console.log("No input folder provided.\n\nUse -h or --help for help.");
+    console.error("No input folder provided.\n\nUse -h or --help for help.");
     process.exit(3);
 }
 
@@ -102,7 +102,7 @@ const main = async () => {
     setTerminalTitle('Scanning folder(s)...');
     folderPaths(encoderfolder, async (err, results) => {
         if (err) {
-            console.log(err);
+            console.error(err);
             process.exit(1);
         }
 
@@ -119,7 +119,7 @@ const main = async () => {
         // Filter only allowed video file extentions
         results = results.filter((file, index) => videoextentions.avaible.includes(getFileExtension(file)));
         if (results.length === 0) {
-            terminal.log('red', `No files found!`);
+            terminal.error('red', `No files found!`);
             process.exit(1);
         }
 
@@ -162,12 +162,12 @@ const main = async () => {
         }
 
         if (setQuality < 0 || setQuality > 51) {
-            terminal.log('red', `Quality must be between 0 and 51`);
+            terminal.error('red', `Quality must be between 0 and 51`);
             process.exit(1);
         }
 
         if (setPresets < 0 || setPresets > 2) {
-            terminal.log('red', `Preset must be between 0 and 2`);
+            terminal.error('red', `Preset must be between 0 and 2`);
             process.exit(1);
         }
 
