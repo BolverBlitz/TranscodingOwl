@@ -195,7 +195,7 @@ const main = async () => {
             terminal.log('green', `Total size after: ${humanFileSize(totalEndSize)} (${Math.round((totalEndSize / totalStartSize) * 100)}%)`);
             terminal.log('green', `Saved: ${humanFileSize(totalStartSize - totalEndSize)}`);
 
-            if (taskHandler.getComputedTasks().length > 0) {
+            if (taskHandler.getComputedTasks() > 0) {
                 if ('n' in args || 'notify' in args) {
                     const variables = {
                         totalSizeBefore: humanFileSize(totalStartSize),
