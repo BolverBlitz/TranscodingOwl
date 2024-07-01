@@ -20,6 +20,39 @@ module.exports = {
         "quality_preset_command": "-preset",
         "quality_preset_constract": ["fast", "medium", "slow"]
     },
+    "hevc_nvenc_2": {
+        "cname": "hevc_nvenc_2",
+        "name": "hevc_nvenc",
+        "type": "GPU",
+        "special_params": "-hwaccel 0",
+        "quality": "vbr",
+        "quality_command": "-rc:v vbr",
+        "quality_constract": ["-cq"],
+        "quality_preset_command": "-preset",
+        "quality_preset_constract": ["fast", "medium", "slow"]
+    },
+    "hevc_nvenc_3": {
+        "cname": "hevc_nvenc_3",
+        "name": "hevc_nvenc",
+        "type": "GPU",
+        "special_params": "-hwaccel 0",
+        "quality": "vbr",
+        "quality_command": "-rc:v vbr",
+        "quality_constract": ["-cq"],
+        "quality_preset_command": "-preset",
+        "quality_preset_constract": ["fast", "medium", "slow"]
+    },
+    "hevc_nvenc_4": {
+        "cname": "hevc_nvenc_4",
+        "name": "hevc_nvenc",
+        "type": "GPU",
+        "special_params": "-hwaccel 0",
+        "quality": "vbr",
+        "quality_command": "-rc:v vbr",
+        "quality_constract": ["-cq"],
+        "quality_preset_command": "-preset",
+        "quality_preset_constract": ["fast", "medium", "slow"]
+    },
     "hevc_amf": {
         "cname": "hevc_amf",
         "name": "hevc_amf",
