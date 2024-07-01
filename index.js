@@ -182,9 +182,12 @@ const main = async () => {
         }
 
         taskHandler.on('all_tasks_done', async () => {
-            setTerminalTitle('Waiting for pending file IO...');
-            terminal.log('green', `\nAll tasks done!`);
-            await delay(15 * 1000, `Waiting for pending file IO...`); // Await pending file IO
+            // If nothing was encoded, then there won´t be any pending file IO
+            if (taskHandler.getComputedTasks() > 0) {
+                setTerminalTitle('Waiting for pending file IO...');
+                terminal.log('green', `\nAll tasks done!`);
+                await delay(15 * 1000, `Waiting for pending file IO...`); // Await pending file IO
+            }
             /*
                 A quick side note about a very unlikely senario:
                 In case there is test.mp4 and test.mkv (The test.mkv was already encoded) in the same folder, the script will count this file twice.
